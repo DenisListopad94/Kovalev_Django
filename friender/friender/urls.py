@@ -18,8 +18,24 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 
+from .views import (
+    # some_view,
+    # MyView,
+    # some_template_view,
+    home_view,
+    hotels_view,
+    users_view,
+    user_comment_view,
+    # persons_view,
+)
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.home, name='home'),
-    path('venues/', views.venues, name='venues'),
+    # path('', views.home, name='home'),
+    # path('venues/', views.venues, name='venues'),
+    path('home', home_view, name="home"),
+    path('hotels', hotels_view, name="hotels"),
+    path('users', users_view, name="users"),
+    path('user_comment', user_comment_view, name="user_comment"),
 ]

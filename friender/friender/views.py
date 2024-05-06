@@ -1,4 +1,5 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 import datetime
 
 def current_datetime(request):
@@ -14,3 +15,83 @@ def home(request):
 def venues(request):
     html = "<html><body><p>List of establishments</p><ul><li>Empty at the moment</ul></body></html>" 
     return HttpResponse(html)
+
+def home_view(request):
+    return render(
+        request=request,
+        template_name="home.html",
+    )
+
+def hotels_view(request):
+    context = {
+        "hotels": hotels
+    }
+    return render(
+        request=request,
+        template_name="hotels.html",
+        context=context
+    )
+
+def users_view(request):
+    context = {
+        "users": users
+    }
+    return render(
+        request=request,
+        template_name="users.html",
+        context=context
+    )
+
+def user_comment_view(request):
+    context = {
+        "users": users
+    }
+    return render(
+        request=request,
+        template_name="user_comments.html",
+        context=context
+    )
+
+
+
+hotels = [
+    {
+        "name":"Plaza",
+        "address":"LosAngeles",
+        "stars":5
+    },
+    {
+        "name":"Turist",
+        "address":"Minsk",
+        "stars":4
+    },
+    {
+        "name":"Bungalo",
+        "address":"Ghana",
+        "stars":2
+    },
+]
+
+users = [
+    {
+        "name": "John",
+        "age": 40,
+        "comment" : ["some John comment", "another John comment"],
+        "photo" :  'static/john.jpg',
+    },
+    {
+        "name": "Ann",
+        "age": 28,
+        "comment": ["some Ann comment", "another Ann comment"],
+        "photo" :  'static/ann.jpg',
+    },
+    {
+        "name": "Peter",
+        "age": 18,
+        "comment": ["some Peter comment", "another Peter comment"],
+        "photo" :  'static/peter.jpg'
+    },
+]
+
+
+
