@@ -1,0 +1,62 @@
+people = Person.objects.bulk_create([
+   ...:     Person(first_name="Kate", last_name = "Rio", age=24, sex = "f"),
+   ...:     Person(first_name="Polina" , last_name = "Lin", age=42, sex = "f"),        
+   ...:     Person(first_name="Suzan", last_name = "White", age=24, sex = "f"),        
+   ...:     Person(first_name="Suzan" , last_name = "Tate", age=18, sex = "f"),        
+   ...:     Person(first_name="Kate", last_name = "Kris", age=27, sex = "f"),
+   ...:     Person(first_name="Peter" , last_name = "Jackson", age=45, sex = "m"),     
+   ...:     Person(first_name="Mike", last_name = "Scarsgard", age=59, sex = "m"),     
+   ...:     Person(first_name="Nick" , last_name = "State", age=16, sex = "m"),        
+   ...:     Person(first_name="Nick", last_name = "Neto", age=22, sex = "m"),
+   ...:     Person(first_name="Robert" , last_name = "Lewandowski", age=60, sex = "m"),
+   ...: ])
+
+hotels= Hotels.objects.bulk_create([
+   ...:     Hotels(name="RoyalPlaza", stars = 5, address="address1", city = "LosAngeles", phone = "5498"),
+   ...:     Hotels(name="Fantastic", stars = 5, address="address2", city = "Chikago", phone = "389"),        
+   ...:     Hotels(name="SweetHome", stars = 5, address="address3", city = "Paris", phone = "24732783"),        
+   ...:     Hotels(name="Citizen" , stars = 4, address="address4", city = "Canbera", phone = "68338"),        
+   ...:     Hotels(name="Cosmopolit", stars = 4, address="address5", city = "Minsk", phone = "24387"),
+   ...:     Hotels(name="GreenDay" , stars = 3, address="address6", city = "Praga", phone = "1032783"),     
+   ...:     Hotels(name="Wooden", stars = 3, address="address7", city = "Manchester", phone = "6987"),     
+   ...:     Hotels(name="Tourist" , stars = 3, address="address8", city = "Mogilev", phone = "20477"),        
+   ...:     Hotels(name="Rest", stars = 3, address="address9", city = "Bermingem", phone = "142732869"),
+   ...:     Hotels(name="Bungalo" , stars = 3, address="address10", city = "Neapol", phone = "253878"),
+   ...: ])
+
+   person = Person.objects.all()
+   person
+
+   hotels = Hotels.objects.filter(stars__gt=3)
+   ...: 
+   ...: for hotel in hotels:
+   ...:     print(f"Hotel: {hotel.name}, Stars: {hotel.stars}, City: {hotel.city}")
+
+   person = Person.objects.filter(age__gt=40, first_name__startswith='P')
+   ...: 
+   ...: for persons in person:
+   ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}, Age: {persons.age}")
+
+   person = Person.objects.filter(first_name='Nick') | Person.objects.filter(first_name='Suzan')
+   ...: 
+   ...: for persons in person:
+   ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}")
+
+   person = Person.objects.order_by('age')[:5]
+    ...:
+    ...: for persons in person:
+    ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}")
+
+    person = Person.objects.filter(sex='f',age__gte=18,age__lte=30)
+    ...:
+    ...: for persons in person:
+    ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}, Age: {persons.age}")
+
+    Person.objects.filter(id=1).update(email = 'esv@gmail.com')
+    Person.objects.filter(id=2).update(email = 'sec@gmail.com')
+    Person.objects.filter(id=3).update(email = 'third@gmail.com')
+    Person.objects.filter(id=7).update(email = 'efbver@mail.ru')
+    person = Person.objects.filter(email__isnull=True)
+    ...:
+    ...: for persons in person:
+    ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}, Age: {persons.age}")
