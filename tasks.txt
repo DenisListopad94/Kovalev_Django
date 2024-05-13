@@ -60,3 +60,29 @@ hotels= Hotels.objects.bulk_create([
     ...:
     ...: for persons in person:
     ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}, Age: {persons.age}")
+
+
+HW4
+
+     person = Person.objects.filter(bookings__hotel__name='B&B HOTEL', age__gt=30)
+...: for persons in person:
+    ...:     print(f"Name: {persons.first_name}, Surname: {persons.last_name}, Age: {persons.age}")
+
+     girls = Person.objects.filter(
+    ...:     sex='f'
+    ...: ).annotate(
+    ...:     num_hobbies=Count('hobbies')
+    ...: ).filter(
+    ...:     num_hobbies__gt=3
+    ...: )[:5]
+
+     hotels = Hotels.objects.filter(stars__gt=4.1)
+   ...: 
+   ...: for hotel in hotels:
+   ...:     print(f"Hotel: {hotel.name}, Stars: {hotel.stars}, City: {hotel.city}")
+
+     hotel_comments = HotelComment.objects.filter(
+    ...:     hotel__name='B&B HOTEL',
+    ...:     person__age__gte=20,
+    ...:     person__age__lte=30
+    ...: )
