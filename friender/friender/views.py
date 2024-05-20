@@ -1,6 +1,10 @@
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta
+from django.db import transaction
 import datetime
+from .models import  Hotels, Persons, Room, Booking
 
 def current_datetime(request):
     now = datetime.datetime.now()
@@ -24,23 +28,23 @@ def home_view(request):
 
 def hotels_view(request):
     context = {
-        "hotels": hotels
+        "hotels": Hotels.objects.prefetch_related("hotel_comments").all()
     }
-    return render(
-        request=request,
-        template_name="hotels.html",
-        context=context
-    )
+    return render(request=request,
+                  template_name="hotels.html",
+                  context=context
+                  )
+
+
 
 def users_view(request):
     context = {
-        "users": users
+        "users": Persons.objects.all().prefetch_related("hobbies")
     }
-    return render(
-        request=request,
-        template_name="users.html",
-        context=context
-    )
+    return render(request=request,
+                  template_name="users.html",
+                  context=context
+                  )
 
 def user_comment_view(request):
     context = {
@@ -51,7 +55,6 @@ def user_comment_view(request):
         template_name="user_comments.html",
         context=context
     )
-
 
 
 hotels = [
