@@ -1,13 +1,13 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
-from datetime import timedelta
+from datetime import datetime,  timedelta
 from django.db import transaction
-import datetime
-from .models import  Hotels, Persons, Room, Booking
+from .models import  Hotels, Persons, Room, Booking, User
+
 
 def current_datetime(request):
-    now = datetime.datetime.now()
+    now = datetime.now().date()
     html = "<html><body>It is now %s.</body></html>" % now
 
     return HttpResponse(html)
@@ -56,6 +56,49 @@ def user_comment_view(request):
         context=context
     )
 
+@transaction.atomic
+def book_room(request, hotel_name, user_id, room_number):
+    if request.method == 'POST':
+        try:
+            hotel = Hotels.objects.get(name=hotel_name)
+        except Hotels.DoesNotExist:
+            return HttpResponse('Hotel with this name not exist', status=404)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return HttpResponse('User with this ID not exist', status=404)
+
+        try:
+            room = Room.objects.get(hotel=hotel, number=room_number)
+        except Room.DoesNotExist:
+            return HttpResponse('Room with this number not exist in this hotel', status=404)
+
+        if room.is_booked:
+            return HttpResponse('This room is booked', status=400)
+
+        room.is_booked = True
+        room.save()
+
+        booking = Booking(
+            room=room,
+            start_date=datetime.now().date(),
+            end_date=datetime.now().date() + timedelta(days=7) ,
+            customer_full_name=f"{user.first_name} {user.last_name}"
+        )
+        booking.save()
+
+        return HttpResponse('Room successfully booked')
+
+    return render(
+        request,
+        'booking.html',
+        {
+            'hotel_name': hotel_name,
+            'user_id': user_id,
+            'room_number': room_number
+        }
+    )
 
 hotels = [
     {

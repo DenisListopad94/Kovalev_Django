@@ -27,6 +27,7 @@ from .views import (
     hotels_view,
     users_view,
     user_comment_view,
+    book_room,
     # persons_view,
 )
 
@@ -41,4 +42,5 @@ urlpatterns = [
     path('hotels', hotels_view, name="hotels"),
     path('users', users_view, name="users"),
     path('user_comment', user_comment_view, name="user_comment"),
+    path('book/<str:hotel_name>/<int:user_id>/<str:room_number>/',  book_room, name='book_room'),
 ]
