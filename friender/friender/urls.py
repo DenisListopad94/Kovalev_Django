@@ -43,4 +43,5 @@ urlpatterns = [
     path('users', users_view, name="users"),
     path('user_comment', user_comment_view, name="user_comment"),
     path('book/<str:hotel_name>/<int:user_id>/<str:room_number>/',  book_room, name='book_room'),
+    path('create_user/', views.create_user, name='create_user'),
 ]

@@ -1,6 +1,7 @@
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse,  HttpResponseRedirect
+from .forms import UserModelForm
 from django.shortcuts import render
-from django.utils import timezone
+from django.urls import reverse
 from datetime import datetime,  timedelta
 from django.db import transaction
 from .models import  Hotels, Persons, Room, Booking, User
@@ -39,7 +40,7 @@ def hotels_view(request):
 
 def users_view(request):
     context = {
-        "users": Persons.objects.all().prefetch_related("hobbies")
+        "users": User.objects.all().prefetch_related("hobbies")
     }
     return render(request=request,
                   template_name="users.html",
@@ -99,6 +100,19 @@ def book_room(request, hotel_name, user_id, room_number):
             'room_number': room_number
         }
     )
+
+def create_user(request):
+    if request.method == "POST":
+        user_form = UserModelForm(request.POST)
+        if user_form.is_valid():
+            user_form.save()
+        return HttpResponseRedirect(reverse("users"))
+    else:
+        user_form = UserModelForm()
+    context = {
+        "form": user_form
+    }
+    return render(request, 'create_user.html',  context=context)   
 
 hotels = [
     {
