@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse,  HttpResponseRedirect
-from .forms import UserModelForm
+from .forms import UserModelForm, HotelsCommentForm
 from django.shortcuts import render
 from django.urls import reverse
 from datetime import datetime,  timedelta
@@ -106,7 +106,7 @@ def create_user(request):
         user_form = UserModelForm(request.POST)
         if user_form.is_valid():
             user_form.save()
-        return HttpResponseRedirect(reverse("users"))
+            return HttpResponseRedirect(reverse("users"))
     else:
         user_form = UserModelForm()
     context = {
@@ -114,44 +114,62 @@ def create_user(request):
     }
     return render(request, 'create_user.html',  context=context)   
 
-hotels = [
-    {
-        "name":"Plaza",
-        "address":"LosAngeles",
-        "stars":5
-    },
-    {
-        "name":"Turist",
-        "address":"Minsk",
-        "stars":4
-    },
-    {
-        "name":"Bungalo",
-        "address":"Ghana",
-        "stars":2
-    },
-]
+def hotel_comment_add_form(request):
+    if request.method == "POST":
+        comment_form = HotelsCommentForm(request.POST)
+        if comment_form.is_valid():
+            comment_form.save()
+            return HttpResponseRedirect(reverse("hotels"))
+    else:
+        comment_form = HotelsCommentForm()
+    context = {
+        "form": comment_form
+    }
 
-users = [
-    {
-        "name": "John",
-        "age": 40,
-        "comment" : ["some John comment", "another John comment"],
-        "photo" :  'static/john.jpg',
-    },
-    {
-        "name": "Ann",
-        "age": 28,
-        "comment": ["some Ann comment", "another Ann comment"],
-        "photo" :  'static/ann.jpg',
-    },
-    {
-        "name": "Peter",
-        "age": 18,
-        "comment": ["some Peter comment", "another Peter comment"],
-        "photo" :  'static/peter.jpg'
-    },
-]
+    return render(
+        request=request,
+        template_name="add_comments.html",
+        context=context
+    )
+
+# hotels = [
+#     {
+#         "name":"Plaza",
+#         "address":"LosAngeles",
+#         "stars":5
+#     },
+#     {
+#         "name":"Turist",
+#         "address":"Minsk",
+#         "stars":4
+#     },
+#     {
+#         "name":"Bungalo",
+#         "address":"Ghana",
+#         "stars":2
+#     },
+# ]
+
+# users = [
+#     {
+#         "name": "John",
+#         "age": 40,
+#         "comment" : ["some John comment", "another John comment"],
+#         "photo" :  'static/john.jpg',
+#     },
+#     {
+#         "name": "Ann",
+#         "age": 28,
+#         "comment": ["some Ann comment", "another Ann comment"],
+#         "photo" :  'static/ann.jpg',
+#     },
+#     {
+#         "name": "Peter",
+#         "age": 18,
+#         "comment": ["some Peter comment", "another Peter comment"],
+#         "photo" :  'static/peter.jpg'
+#     },
+# ]
 
 
 

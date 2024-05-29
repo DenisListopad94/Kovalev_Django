@@ -86,3 +86,12 @@ HW4
     ...:     person__age__gte=20,
     ...:     person__age__lte=30
     ...: )
+
+HW8
+    users = Users.objects.filter(age__gt=30,hobbies__name="Sport").annotate(Count('hobbies'))
+...: for user in users:
+    ...:     print(f"Name: {user.first_name}, Surname: {user.last_name}, Age: {user.age}")
+
+    users = Users.objects.annotate(Count('hobbies')).filter(hobbies__gt=3)[:5]
+...: for user in users:
+    ...:     print(f"Name: {user.first_name}, Surname: {user.last_name}, Age: {user.age}")
