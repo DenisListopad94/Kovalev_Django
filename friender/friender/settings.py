@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'django_extensions',
     'crispy_forms',
+    'rest_framework',
+    'friender_api',
     'friender',
 ]
 
