@@ -6,8 +6,12 @@ from django.shortcuts import render
 from django.urls import reverse,  reverse_lazy
 from datetime import datetime,  timedelta
 from django.db import transaction
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import  Hotels, Persons, Room, Booking, User, PersonComment
-
+import time
+from django.views.decorators.cache import cache_page
 
 def current_datetime(request):
     now = datetime.now().date()
@@ -26,6 +30,9 @@ def venues(request):
 class Home_view(TemplateView):
     template_name="home.html"
 
+@cache_page(60*30)
+@permission_required("friender.view_hotels",login_url="/admin/login/")
+@login_required(login_url="/admin/login/")
 def hotels_view(request):
     context = {
         "hotels": Hotels.objects.prefetch_related("hotel_comments").all()
@@ -36,12 +43,15 @@ def hotels_view(request):
                   )
 
 
-
-class Users_view(ListView):
+class Users_view(LoginRequiredMixin, ListView):
     model = User
     template_name="users.html"
     context_object_name = "users"
     paginate_by = 4
+
+    @method_decorator(permission_required('friender.view_user'))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
 class UserDetailView(DetailView):
     model = User
@@ -52,6 +62,7 @@ class UserDetailView(DetailView):
         id = self.kwargs.get('id')
         return User.objects.get(id=id)
 
+@cache_page(60*30)
 def user_comment_view(request):
     context = {
         "persons": Persons.objects.prefetch_related("person_comments").all()
@@ -61,6 +72,7 @@ def user_comment_view(request):
         template_name="user_comments.html",
         context=context
     )
+
 
 @transaction.atomic
 def book_room(request, hotel_name, user_id, room_number):
@@ -160,5 +172,33 @@ class HotelCommentFormView(FormView):
 #     },
 # ]
 
+def factorial(n):
+    """
+    Вычисляет факториал числа n.
+    """
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n - 1)
 
+CACHE_FACTORIAL = {}
 
+def get_factorial(n):
+    if n in CACHE_FACTORIAL:
+        return CACHE_FACTORIAL[n]
+    else:
+        result = factorial(n)
+        CACHE_FACTORIAL[n] = result
+        time.sleep(3)
+        return result
+
+def compute_factorial(request, number):
+    start_time = time.time()
+    factorial_of_number = get_factorial(number)
+    end_time = time.time()
+
+    return render(request, 'factorial_result.html', {
+        'number': number,
+        'factorial': factorial_of_number,
+        'execution_time': end_time - start_time,
+    })

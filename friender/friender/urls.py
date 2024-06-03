@@ -17,7 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import  include, path
+from django.contrib.auth.decorators import login_required
 from . import views
+from rest_framework.authtoken import views
 
 from .views import (
     # some_view,
@@ -31,6 +33,7 @@ from .views import (
     UserDetailView,
     Create_user,
     HotelCommentFormView,
+    compute_factorial,
     # persons_view,
 )
 
@@ -43,11 +46,14 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('home/', Home_view.as_view(), name="home"),
     path('hotels', hotels_view, name="hotels"),
-    path('users', Users_view.as_view(), name="users"),
+    path('users', login_required(Users_view.as_view()), name="users"),
     path('user_comment', user_comment_view, name="user_comment"),
     path('book/<str:hotel_name>/<int:user_id>/<str:room_number>/',  book_room, name='book_room'),
     path('create_user/', Create_user.as_view(), name='create_user'),
     path('comment_add', HotelCommentFormView.as_view(), name="comment_add"),
     path('user/<int:id>', UserDetailView.as_view(), name='user-detail'),
     path('api/', include("friender_api.urls")),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api-token-auth/', views.obtain_auth_token),
+    path('factorial/<int:number>', compute_factorial, name='factorial'),
 ]
