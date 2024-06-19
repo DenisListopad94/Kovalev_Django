@@ -159,3 +159,10 @@ class Booking(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     customer_full_name = models.CharField(max_length=255)
+
+class Queue(models.Model):
+    item = models.CharField(max_length=255)  
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.item
