@@ -1,6 +1,5 @@
 from django.db import models
 from .validators import users_age_validator
-
 # Create your models here.
 
 class User(models.Model):
@@ -14,6 +13,7 @@ class User(models.Model):
     sex = models.CharField(max_length=1, choices=SEX_PERSON, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
+
 
     class Meta:
         indexes = [
@@ -41,6 +41,9 @@ class Hotels(models.Model):
     address = models.CharField(max_length=40, null=True)
     city = models.CharField(max_length=40, null=True)
     phone = models.CharField(max_length=40, null=True)
+    photo = models.ImageField(null=True, upload_to="hotels_photo/")
+
+
     owners = models.ForeignKey(
         to="HotelOwner",
         on_delete=models.SET_NULL,
@@ -81,7 +84,7 @@ class Hobbies(models.Model):
 
 
 class Profile(models.Model):
-    photo = models.ImageField(null=True, blank=True)
+    photo = models.ImageField(null=True, blank=True, upload_to="profile_photo/")
     id_card_number = models.IntegerField(null=True)
     serial = models.FloatField(null=True)
     persons = models.OneToOneField(

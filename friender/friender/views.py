@@ -1,16 +1,17 @@
 from django.http import HttpRequest, HttpResponse,  HttpResponseRedirect
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import CreateView, FormView
-from .forms import UserModelForm, HotelsCommentForm
-from django.shortcuts import render
+from .forms import UserModelForm, HotelsCommentForm, ProfileForm
+import time
+from django.shortcuts import render, redirect
 from django.urls import reverse,  reverse_lazy
 from datetime import datetime,  timedelta
 from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import  Hotels, Persons, Room, Booking, User, PersonComment
-import time
+from .models import  Hotels, Persons, Room, Booking, User, PersonComment, Profile
+from django.core.paginator import Paginator
 from django.views.decorators.cache import cache_page
 
 def current_datetime(request):
@@ -34,14 +35,15 @@ class Home_view(TemplateView):
 @permission_required("friender.view_hotels",login_url="/admin/login/")
 @login_required(login_url="/admin/login/")
 def hotels_view(request):
-    context = {
-        "hotels": Hotels.objects.prefetch_related("hotel_comments").all()
-    }
-    return render(request=request,
-                  template_name="hotels.html",
-                  context=context
-                  )
+    hotels = Hotels.objects.prefetch_related("hotel_comments").all()
+    paginator = Paginator(hotels, 5)  
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
 
+    context = {
+        "hotels": page,
+    }
+    return render(request, "hotels.html", context)
 
 class Users_view(LoginRequiredMixin, ListView):
     model = User
@@ -64,15 +66,15 @@ class UserDetailView(DetailView):
 
 @cache_page(60*30)
 def user_comment_view(request):
-    context = {
-        "persons": Persons.objects.prefetch_related("person_comments").all()
-    }
-    return render(
-        request=request,
-        template_name="user_comments.html",
-        context=context
-    )
+    persons = Persons.objects.prefetch_related("person_comments").all()
+    paginator = Paginator(persons, 1)  
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
 
+    context = {
+        "persons": page,
+    }
+    return render(request, "user_comments.html", context)
 
 @transaction.atomic
 def book_room(request, hotel_name, user_id, room_number):
@@ -202,3 +204,16 @@ def compute_factorial(request, number):
         'factorial': factorial_of_number,
         'execution_time': end_time - start_time,
     })
+
+
+
+def create_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.save()
+            return HttpResponseRedirect(reverse("users"))
+    else:
+        form = ProfileForm()
+    return render(request, 'create_profile.html', {'form': form})

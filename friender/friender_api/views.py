@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from django.http import Http404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from friender.models import HotelOwner, Hobbies
 from .serializers import HotelOwnerSerializer, HobbiesSerializer
 from rest_framework.permissions import IsAuthenticated,AllowAny
@@ -13,6 +15,9 @@ class HotelOwnerListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = HotelOwner.objects.all()
     serializer_class = HotelOwnerSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ["sex", "age"]
+    search_fields = ["sex", "age"]
     # def get(self, request):
     #     owners = HotelOwner.objects.all()
     #     serializer = HotelOwnerSerializer(owners, many=True)
@@ -58,4 +63,6 @@ class HobbiesListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     hobbies = Hobbies.objects.all()
     serializer = HobbiesSerializer(hobbies, many=True)
-
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ["name", "experience"]
+    search_fields = ["name", "experience"]

@@ -17,9 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import  include, path
+from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
 from . import views
 from rest_framework.authtoken import views
+from . import settings
 
 from .views import (
     # some_view,
@@ -34,6 +36,7 @@ from .views import (
     Create_user,
     HotelCommentFormView,
     compute_factorial,
+    create_profile,
     # persons_view,
 )
 
@@ -52,8 +55,12 @@ urlpatterns = [
     path('create_user/', Create_user.as_view(), name='create_user'),
     path('comment_add', HotelCommentFormView.as_view(), name="comment_add"),
     path('user/<int:id>', UserDetailView.as_view(), name='user-detail'),
+    path('create_profile', create_profile, name="profile_add"),
     path('api/', include("friender_api.urls")),
     path('api-auth/', include('rest_framework.urls')),
     path('api-token-auth/', views.obtain_auth_token),
     path('factorial/<int:number>', compute_factorial, name='factorial'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

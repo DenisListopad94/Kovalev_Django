@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import User, HotelsComment
+from .models import User, HotelsComment, Profile
 
 
 class UserModelForm(forms.ModelForm):
@@ -20,3 +20,8 @@ class HotelsCommentForm(forms.ModelForm):
         widgets = {
             "comment": forms.Textarea(attrs={"size": 500, 'class': 'special', "required": False})
         }
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['photo',  'persons', 'id_card_number', 'serial']

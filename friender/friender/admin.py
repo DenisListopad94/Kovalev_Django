@@ -8,8 +8,13 @@ from .models import (
     HotelsComment,
     User,
     PersonComment)
-
+from django.utils.safestring import mark_safe
 from django.contrib import admin
+
+@admin.display(description='PHOTO')
+def get_html_photo(objects):
+    if objects.photo:
+        return mark_safe(f'<img src={objects.photo.url} width=100>')
 
 class PersonCommentInline(admin.StackedInline):
     model = PersonComment
@@ -76,7 +81,7 @@ class HotelOwnerAdmin(admin.ModelAdmin):
 
 
 class HotelsAdmin(admin.ModelAdmin):
-    list_display = ["name", "stars", "address", "city", "phone", "owners"]
+    list_display = ["name", "stars", "address", "city", "phone", "owners", get_html_photo]
     search_fields = ["name", "address", "city"]
     list_filter = ["name", "stars", "address", "city"]
     inlines = [
@@ -107,7 +112,7 @@ class HobbiesAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["id_card_number", "serial", "persons"]
+    list_display = ["id_card_number", "serial", "persons" , get_html_photo]
 
 
 class BookOrderInfoAdmin(admin.ModelAdmin):
