@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_celery_results',
+    'django_celery_beat',
     'django_filters',
     'friender_api',
     'friender',
@@ -103,6 +105,7 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASS"),
         "TEST": {
             "NAME": os.environ.get("TEST_DATABASE_NAME"),
+        }
     },
 }
 
@@ -180,3 +183,11 @@ CACHES = {
         'TIMEOUT': 60 * 30,
     }
 }
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'default_redis'
+
+CELERY_FLOWER_URL = 'http://localhost:5555'
