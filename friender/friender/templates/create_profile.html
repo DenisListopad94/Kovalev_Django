@@ -1,0 +1,17 @@
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Profile add form{% endblock %}
+
+{% block content %}
+
+
+    <form enctype="multipart/form-data"  method="POST">
+
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="OK">
+    </form>
+
+{% endblock %}
