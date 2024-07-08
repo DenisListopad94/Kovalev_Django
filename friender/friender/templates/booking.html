@@ -33,29 +33,17 @@
             </div>
         </div>
     </nav>
+    
+    {% block content %}
 
+    <form method="post" action="">
+        {% csrf_token %}
+        <button type="submit">Book</button>
+    </form>
+
+    {% endblock %}
     <!-- Main Content -->
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Comment</th>
-            <th scope="col">Hotel</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for person in persons %}
-          <tr>
-            <td>{{person.first_name}}</td>
-             {% for person_comments in person.person_comments.all %}
-                <td>{{person_comments.comment}}</td>
-                <td>{{person_comments.hotels}}</td>
-            {% endfor %}
-          </tr>
-        {% endfor %}
-      
-        </tbody>
-    </table>
+
     <!-- Include Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" ></script>
 </body>

@@ -86,3 +86,68 @@ HW4
     ...:     person__age__gte=20,
     ...:     person__age__lte=30
     ...: )
+
+HW8
+    users = Users.objects.filter(age__gt=30,hobbies__name="Sport").annotate(Count('hobbies'))
+...: for user in users:
+    ...:     print(f"Name: {user.first_name}, Surname: {user.last_name}, Age: {user.age}")
+
+    users = Users.objects.annotate(Count('hobbies')).filter(hobbies__gt=3)[:5]
+...: for user in users:
+    ...:     print(f"Name: {user.first_name}, Surname: {user.last_name}, Age: {user.age}")
+
+HW9
+from django.contrib.auth.models import User
+   ...: user = User.objects.create_user('ShellUser', password='pass_shell')
+   ...: user.is_staff = True
+   ...: user.is_active = True
+   ...: user.save()
+
+permisions = Permission.objects.get(name='Can view hotels')
+user.user_permissions.add(permisions)
+permisions = Permission.objects.get(name='Can add hotels')
+user.user_permissions.add(permisions)
+permisions = Permission.objects.get(name='Can add person comment')
+user.user_permissions.add(permisions)
+permisions = Permission.objects.get(name='Can view person comment')
+user.user_permissions.add(permisions)
+user.save()
+
+ from django.contrib.auth.models import Group
+   ...: group, created = Group.objects.get_or_create(name='Hotel owners')
+
+ from django.contrib.auth.models import Permission
+   ...: add_permission = Permission.objects.get(codename='add_hotels')
+   ...: change_permission = Permission.objects.get(codename='change_hotels')
+   ...: delete_permission = Permission.objects.get(codename='delete_hotels')
+   ...: view_permission = Permission.objects.get(codename='view_hotels')
+   ...: group.permissions.add(add_permission, change_permission, delete_permission, view_permission)
+
+user.groups.add(group)
+
+In [6]: from django.contrib.auth.models import User
+   ...: user = User.objects.get(username='UserPaul')
+
+In [7]: from rest_framework.authtoken.models import Token
+   ...: token = Token.objects.create(user=user)
+   ...: print(token.key)
+f42208dfdf0ab642fb4304ecd7f03c4948bd9b1f
+
+In [8]: from django.contrib.auth.models import User
+   ...: user = User.objects.get(username='admin')
+
+In [9]: from rest_framework.authtoken.models import Token
+   ...: token = Token.objects.create(user=user)
+   ...: print(token.key)
+1e9e3a5d4d66313e5309aa2408e4f422cac44429
+
+In [10]: from django.contrib.auth.models import User
+    ...: user = User.objects.get(username='UserShell')
+
+In [11]: from django.contrib.auth.models import User
+    ...: user = User.objects.get(username='ShellUser')
+
+In [12]: from rest_framework.authtoken.models import Token
+    ...: token = Token.objects.create(user=user)
+    ...: print(token.key)
+23ec66189eb580f60a2114e3fc699413d2823693
